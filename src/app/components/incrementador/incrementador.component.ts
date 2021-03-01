@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input,Output,OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-incrementador',
   templateUrl: './incrementador.component.html',
@@ -20,7 +21,17 @@ export class IncrementadorComponent implements OnInit {
   //   return `${this.progreso}%`
   // }
   cambiarValor(valor:number){
-    this.emitirValor(valor)
+    //this.emitirValor(valor)
+    if(this.progreso>=100 && valor>=0){
+      this.valorEmitido.emit(100)
+      return this.progreso=100;
+    }
+    if(this.progreso<=0 && valor<0){
+      this.valorEmitido.emit(0)      
+      return this.progreso=0
+    }
+    this.progreso=this.progreso+valor
+    this.valorEmitido.emit(this.progreso)
   } 
   onChange(value:number){
       this.emitirValor(value)
@@ -31,18 +42,8 @@ export class IncrementadorComponent implements OnInit {
     }else if(valor<=0){
       this.progreso=0
     }else{
-      this.progreso=valor;
+      this.progreso= this.progreso + valor;
     }
-    this.valorEmitido.emit(this.progreso)
-    // if(this.progreso>=100 && valor>=0){
-    //   this.valorEmitido.emit(100)
-    //   return this.progreso=100;
-    // }
-    // if(this.progreso<=0 && valor<0){
-    //   this.valorEmitido.emit(0)      
-    //   return this.progreso=0
-    // }
-    // this.progreso=this.progreso+valor
-    // this.valorEmitido.emit(this.progreso)
+    this.valorEmitido.emit(this.progreso)    
   }
 }

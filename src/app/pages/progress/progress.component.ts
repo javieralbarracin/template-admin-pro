@@ -7,9 +7,9 @@ import { Component, Output } from '@angular/core';
 })
 export class ProgressComponent{
   
-  progreso1:number=15;
+  progreso1:number=10;
   
-  progreso2:number=25;
+  progreso2:number=20;
 
   get getProgreso1(){
     return `${this.progreso1}%`
