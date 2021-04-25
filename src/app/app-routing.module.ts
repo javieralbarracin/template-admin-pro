@@ -7,9 +7,14 @@ import { NopagefoundComponent } from './nopagefound/nopagefound.component';
 
 const routes:Routes=[
   // path '/dashboard' PagesRouting
-  // path '/login' AuthRouting
-     
-  { path:'',redirectTo:'/dashboard',pathMatch:'full' }, 
+  //path '/login' AuthRouting
+  // { 
+  //   path:'loin',
+  //   loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  // },    
+  //{ path:'',redirectTo:'login',pathMatch:'full' },    
+  //{ path:'',redirectTo:'/dashboard',pathMatch:'full' }, 
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path:'**',component:NopagefoundComponent },   
 ]
 
