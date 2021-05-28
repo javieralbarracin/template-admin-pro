@@ -12,15 +12,22 @@ import { Usuario } from '../../models/usuario.model';
 export class HeaderComponent implements OnInit {
 
   usuario:Usuario;
-  constructor(private router:Router,private authService:AuthService) {
-      this.usuario=authService.usuario;
+  constructor(
+      private router:Router,
+      private authService:AuthService) {
+        this.usuario=authService.usuario;
    }
 
   ngOnInit(): void {
   }
   logout(){
-    //localStorage.removeItem('access_token')
-    this.authService.logout()
-    //this.router.navigateByUrl('login')
+    this.authService.logout()    
+  }
+  buscar(termino:string){
+    if( termino.length===0 ){
+      //this.router.navigateByUrl(`/dashboard`);
+      return;
+    }
+    this.router.navigateByUrl(`dashboard/busqueda/${termino}`)
   }
 }

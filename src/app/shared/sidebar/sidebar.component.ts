@@ -12,13 +12,20 @@ import { SidebarService } from '../../services/sidebar.service';
 export class SidebarComponent implements OnInit {
   menuItems:any[]
   usuario:Usuario;
-  constructor(private sidebarServices:SidebarService,private authService:AuthService) { 
+  constructor(public sidebarServices:SidebarService,
+              private authService:AuthService) { 
+
     this.menuItems=sidebarServices.menu
     this.usuario = authService.usuario;
+
   }
 
   ngOnInit(): void {
 
   }
-
-}
+  logout(){
+    //localStorage.removeItem('access_token')
+    this.authService.logout()
+    //this.router.navigateByUrl('login')
+  }
+} 

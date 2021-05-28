@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { PagesModule } from './pages/pages.module';
 import { AuthModule } from './auth/auth.module';
 import { NopagefoundComponent } from './nopagefound/nopagefound.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 
 @NgModule({
@@ -18,11 +19,17 @@ import { NopagefoundComponent } from './nopagefound/nopagefound.component';
   imports: [
     BrowserModule,
     AuthModule,
-    PagesModule,
+    //PagesModule,
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide:HTTP_INTERCEPTORS,
+      useClass:AuthInterceptor,
+      multi:true //para que esté pendiente de todas las request
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

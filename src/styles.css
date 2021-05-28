@@ -21,3 +21,35 @@
     width: 180px;
     height: 200px;
 }
+
+.w75{
+    width: 75px;
+}
+.w100{
+    width: 100px;
+}
+.w140{
+    width: 140px;
+}
+.w200{
+    width: 200px;
+}
+.w-avatar{
+    /* border-radius: 100%; */
+    width: 70%;
+}
+.fondo-modal-imagen{
+    background-color: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    left: 0px;
+    position: fixed;
+    top:0px;
+    width: 100%;
+    z-index: 9999;
+}
+.oculto{
+    display: none;
+}
+.actions{
+    margin: 20px;
+}

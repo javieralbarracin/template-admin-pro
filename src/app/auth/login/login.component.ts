@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
     this.authService.authentication(login).subscribe(resp=>{
         //console.log('resp-->',resp)
         if(resp['ok']){
-          localStorage.setItem('access_token', resp['token']);
+          //localStorage.setItem('access_token', resp['token']);
           this.router.navigateByUrl('/dashboard')
         }
         if (rememberMe) {

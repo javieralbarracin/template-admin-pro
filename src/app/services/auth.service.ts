@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, delay, map, tap } from 'rxjs/operators';
 
 import { environment as env } from '../../environments/environment';
 import { Login } from '../auth/login/login';
+import { CargarUsuario } from '../interfaces/cargar-usuarios.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { Usuario } from '../models/usuario.model';
 
@@ -24,6 +25,26 @@ export class AuthService {
   get token():string{
       return localStorage.getItem('access_token') || '';
   }
+  get uid():string{
+    return this.usuario.uid || '';
+  }
+  get headers(){
+    return {
+        headers: {
+        'x-token': this.token
+      }
+    }
+  }
+  get role():'ADMIN_ROLE' | 'USER_ROLE'{
+    return this.usuario.role;
+  }
+  get menu(){
+    return localStorage.getItem( 'menu' ) || '';
+  }
+  guardarLocalStorage(token:string, menu:any){
+    localStorage.setItem('access_token', token );
+    localStorage.setItem('menu', JSON.stringify(menu) );
+  }
   googleInit() {
 
     return new Promise( resolve => {
@@ -38,11 +59,27 @@ export class AuthService {
     })
 
   }
+  loginGoogle( token ) {
+    
+    return this.http.post(`${ env.endPoint }/login/google`, { token } )
+                .pipe(
+                  tap( (resp: any) => {
+                    this.guardarLocalStorage(resp.token,resp.menu);
+                  })
+                );
+
+  }
   authentication(login:Login){
-    return this.http.post(`${env.endPoint}/login`,login);
+    return this.http.post(`${env.endPoint}/login`,login).pipe(
+      tap( (resp: any) => {
+        this.guardarLocalStorage(resp.token,resp.menu);
+      })
+    );
   }
   logout() {
     localStorage.removeItem('access_token');
+
+    // Borrar menu
 
     this.auth2.signOut().then(() => {
 
@@ -62,10 +99,9 @@ export class AuthService {
     }).pipe(
       map( (resp: any) => {
         //console.log(resp)
-        const {email, google, img='', nombre, role,uid } = resp.usuario;
-        this.usuario= new Usuario(nombre,email,'',img, google,role,uid);
-        //console.log(this.usuario);
-        localStorage.setItem('access_token', resp.token );
+        const { email, google, img = '', nombre, role,uid } = resp.usuario;
+        this.usuario = new Usuario(nombre,email,'',img, google,role,uid);
+        this.guardarLocalStorage(resp.token,resp.menu);
         return true;
       }),
       catchError( error => of(false) )
@@ -77,27 +113,35 @@ export class AuthService {
     return this.http.post(`${ env.endPoint }/usuarios`, formData )
               .pipe(
                 tap( (resp: any) => {
-                  localStorage.setItem('access_token', resp.token )
+                  this.guardarLocalStorage(resp.token,resp.menu);
                 })
               )
 
   }
-  actualizarUsuario(data:{ nombre:string, email:string}){
-      
-      return  this.http.put(`${ env.endPoint }/usuarios/${this.usuario.uid}`,data,{
-          headers: {
-            'x-token': this.token
-          }
-        });
+  actualizarUsuario(usuario:Usuario){ 
+      return  this.http.put(`${ env.endPoint }/usuarios/${usuario.uid}`,usuario,this.headers);
   }
-  loginGoogle( token ) {
-    
-    return this.http.post(`${ env.endPoint }/login/google`, { token } )
-                .pipe(
-                  tap( (resp: any) => {
-                    localStorage.setItem('access_token', resp.token )
-                  })
-                );
-
+  actualizarPerfil(data:{ nombre:string, email:string, role:string}){ 
+     data={
+       ...data,
+       role:this.usuario.role
+     }     
+      return  this.http.put(`${ env.endPoint }/usuarios/${this.usuario.uid}`,data,this.headers);
+  }
+  cargarUsuarios(desde:number=0){
+    return this.http.get<CargarUsuario>(`${ env.endPoint }/usuarios?desde=${ desde }`,this.headers)
+    .pipe(
+      //delay(3000),
+      map( resp => {
+        const usuarios = resp.usuarios.map(user=> new Usuario(user.nombre,user.email,user.password,user.img,user.google,user.role,user.uid));
+        return {
+          total:resp.total,
+          usuarios
+        }
+      })
+    );
+  }
+  eliminarUsuario(uid:string){
+    return this.http.delete(`${ env.endPoint }/usuarios/${ uid }`,this.headers);
   }
 }

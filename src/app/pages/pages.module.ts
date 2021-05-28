@@ -15,6 +15,14 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { PerfilComponent } from './perfil/perfil.component';
+import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
+import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
+import { PipeModule } from '../pipes/pipe.module';
+import { BusquedaComponent } from './busqueda/busqueda.component';
+import { MedicoComponent } from './mantenimientos/medicos/medico.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from '../interceptors/auth.interceptor';
 
 
 
@@ -27,7 +35,12 @@ import { PerfilComponent } from './perfil/perfil.component';
     AccountSettingsComponent,
     PromesasComponent,
     RxjsComponent,
-    PerfilComponent
+    PerfilComponent,
+    UsuariosComponent,
+    HospitalesComponent,
+    MedicosComponent,
+    BusquedaComponent,
+    MedicoComponent
   ],
   exports:[
     DashboardComponent,    
@@ -38,10 +51,20 @@ import { PerfilComponent } from './perfil/perfil.component';
   ],
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
-    SharedModule,RouterModule,
-    ComponentsModule]
+    FormsModule,
+    RouterModule,
+    SharedModule,
+    ComponentsModule,
+    PipeModule
+  ],
+  providers:[
+    // {
+    //   provide:HTTP_INTERCEPTORS,
+    //   useClass:AuthInterceptor,
+    //   multi:true //para que esté pendiente de todas las request
+    // }
+  ]
 
 })
 export class PagesModule { }

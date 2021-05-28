@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   baseUrl:'http://localhost:4200',
   endPoint:'http://localhost:3005/api',
-  client_id:'yuor client id'
+  client_id:'your-client-id'
 };
 
 /*
